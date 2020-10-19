@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Gayathri:wght@100;400;700&display=swap');
+
+#body-wrapper {
+    background-color: black;
+}
+
+body {
+    background-color: black;
+    font-family: 'Gayathri', sans-serif;
+    font-weight: 400;
+    overflow: hidden;
+}
+
+canvas {
+    position: absolute;
+    margin: -8px;
+    padding: 0px;
+    background: #fafafa;
+    border: 3px solid white;
+    border-style: inset;
+}
+
+h2{
+    margin-top: 0px;
+}
+
+#controls {
+    position: absolute;
+    display: none;
+    left: 10px;
+    top: 0px;
+    min-width: 360px;
+    background: white;
+    padding: 10px;
+    border: 3px solid black;
+    border-radius: 10px;
+}
+
+#volumeLabel {
+    margin-left: 1rem;
+}
+
+.color-picker {
+    width: 50%;
+    margin-top: 3px;
+}
+
+#settings-image {
+    position: absolute;
+    display: block;
+    left: 10px;
+    top: 0px;
+}
+
+section {
+    margin-bottom: 1rem;
+}
+
+#playButton {
+    font-size: 1.2rem;
+    width: 6rem;
+}
+
+button[data-playing="yes"]:after {
+    content: "Pause";
+}
+
+button[data-playing="no"]:after {
+    content: "Play";
+}
+
+#fsButton {
+    font-size: 1.2rem;
+    width: 8rem;
+}

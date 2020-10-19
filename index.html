@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Audio Visualizer</title>
+    <link href="styles/default-styles.css" type="text/css" rel="stylesheet" />
+    <script src="./src/loader.js" type="module"></script>
+</head>
+
+<body>
+    <div id="body-wrapper">
+        <main>
+            <canvas width="800" height="400"></canvas>
+
+
+            <div id="controls">
+
+                <section>
+                    <button id="playButton" data-playing="no"></button>
+                    <button id="fsButton">Full Screen</button>
+                    <br>
+                    <br>
+                    <label>Track:
+                        <select id="trackSelect">
+                            <option value="media/Aragami.mp3" selected>Aragami</option>
+                            <option value="media/Every Single Time.mp3">Every Single Time</option>
+                            <option value="media/GALAXY BURST.mp3">GALAXY BURST</option>
+                            <option value="media/Sweden.mp3">Sweden</option>
+                        </select>
+                    </label>
+                </section>
+
+                <section>
+                    Volume: <input type="range" id="volumeSlider" min="0" max="2" value="1" step="0.01">
+                    <span id="volumeLabel">???</span>
+                </section>
+
+                <div>--------------------------------------------------------</div>
+
+                <h2>Visuals</h2>
+
+                <section>
+                    <span><input type="checkbox" id="gradientCB" checked><label for="gradientCB">Show Gradient</label></span>
+                    <span><input type="checkbox" id="barsCB" checked><label for="barsCB">Show Bars</label></span>
+                    <span><input type="checkbox" id="circlesCB" checked><label for="circlesCB">Show Circles</label></span>
+                    <br>
+                    <span><input type="checkbox" id="noiseCB"><label for="noiseCB">Show Noise</label></span>
+                    <span><input type="checkbox" id="invertCB"><label for="invertCB">Invert Colors</label></span>
+                    <span><input type="checkbox" id="embossCB"><label for="embossCB">Emboss</label></span>
+                    <br>
+                </section>
+
+                <span><input type="checkbox" id="waveform-line-check" checked><label for="waveform-line-check">Waveform Line Effect</label></span>
+                <br>
+                <label for="waveform-style">Waveform Type:
+                    <select id="waveform-style">
+                        <option value="default" selected>Default</option>
+                        <option value="average">Average</option>
+                        <option value="smooth">Smooth</option>
+                    </select>
+                </label>
+                <br>
+                <br>
+                <span><input type="checkbox" id="waveformGradientCB" checked><label for="waveformGradientCB">Show Waveform Gradient</label></span>
+                <section>
+                    <label>Waveform Gradient Colors:</label>
+                    <br>
+                    <label for="color-a-picker">A:</label>
+                    <input type="color" class="color-picker" id="color-a-picker" value="#ff0000">
+                    <br>
+                    <label for="color-b-picker">B:</label>
+                    <input type="color" class="color-picker" id="color-b-picker" value="#ff7f00">
+                    <br>
+                    <label for="color-c-picker">C:</label>
+                    <input type="color" class="color-picker" id="color-c-picker" value="#ffff00">
+                    <br>
+                    <label for="color-d-picker">D:</label>
+                    <input type="color" class="color-picker" id="color-d-picker" value="#00ff00">
+                    <br>
+                    <label for="color-e-picker">E:</label>
+                    <input type="color" class="color-picker" id="color-e-picker" value="#0000ff">
+                    <br>
+                    <label for="color-f-picker">F:</label>
+                    <input type="color" class="color-picker" id="color-f-picker" value="#2e2b5f">
+                    <br>
+                    <label for="color-g-picker">G:</label>
+                    <input type="color" class="color-picker" id="color-g-picker" value="#8b00ff">
+                </section>
+
+                <div>--------------------------------------------------------</div>
+
+                <h2>Audio</h2>
+
+                <label for="filter-select">Filter:
+                    <select id="filter-select">
+                        <option value="allpass" selected>All Pass</option>
+                        <option value="highpass">High Pass</option>
+                        <option value="lowpass">Low Pass</option>
+                        <option value="bandpass">Band Pass</option>
+                        <option value="lowshelf">Low Shelf</option>
+                        <option value="highshelf">High Shelf</option>
+                        <option value="peaking">Peaking</option>
+                    </select>
+                </label>
+                <br>
+                <label for="panner-select">Panner:
+                    <select id="panner-select">
+                        <option value="equalpower" selected>Equal Power</option>
+                        <option value="HRTF">HRTF</option>
+                    </select>
+                </label>
+                <br>
+                <br>
+                <label for="chorus-select">Chorus Effect:
+                    <select id="chorus-select">
+                        <option value="lowpass" selected>Low Pass</option>
+                        <option value="highpass">High Pass</option>
+                        <option value="bandpass">Band Pass</option>
+                        <option value="allpass">All Pass</option>
+                    </select>
+                </label>
+                <br>
+                <section>
+                    Chorus Effect Intensity: <input type="range" id="chorus-effect-gain-slider" min="0" max="2" value="0" step="0.01">
+                </section>
+
+            </div>
+
+
+            <div id="settings-select">
+                <img id="settings-image" src="media/settings-icon2.png" title="Settings">
+            </div>
+
+        </main>
+    </div>
+</body>
+
+</html>
