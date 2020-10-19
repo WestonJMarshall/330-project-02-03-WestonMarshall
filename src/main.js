@@ -27,7 +27,8 @@ const drawParams = {
     gradientColorD: "#00ff00",
     gradientColorE: "#0000ff",
     gradientColorF: "#2e2b5f",
-    gradientColorG: "#8b00ff"
+    gradientColorG: "#8b00ff",
+    globalStyle: 1,
 };
 
 // 1 - here we are faking an enumeration
@@ -105,6 +106,10 @@ function setupUI(canvasElement) {
         if (playButton.dataset.playing == "yes") {
             playButton.dispatchEvent(new MouseEvent("click"));
         }
+    };
+    
+    document.querySelector('#global-style').onchange = e => {
+        drawParams.globalStyle = e.target.value;
     };
 
     document.querySelector('#gradientCB').onchange = e => {
@@ -190,17 +195,6 @@ function setupUI(canvasElement) {
     document.querySelector('#panner-select').onchange = e => {
         audio.setPanner(e.target.value);
     };
-
-    document.querySelector('#chorus-select').onchange = e => {
-        audio.setChorusFilter(e.target.value);
-    };
-
-    document.querySelector('#chorus-effect-gain-slider').oninput = e => {
-        audio.setChorusGain(e.target.value);
-    };
-
-
-
 } // end setupUI
 
 function loop() {

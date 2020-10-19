@@ -40,6 +40,14 @@
 
                 <h2>Visuals</h2>
 
+                <label>Global Style:
+                    <select id="global-style">
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                    </select>
+                </label>
+                <br>
+                <br>
                 <section>
                     <span><input type="checkbox" id="gradientCB" checked><label for="gradientCB">Show Gradient</label></span>
                     <span><input type="checkbox" id="barsCB" checked><label for="barsCB">Show Bars</label></span>
@@ -110,24 +118,9 @@
                         <option value="HRTF">HRTF</option>
                     </select>
                 </label>
-                <br>
-                <br>
-                <label for="chorus-select">Chorus Effect:
-                    <select id="chorus-select">
-                        <option value="lowpass" selected>Low Pass</option>
-                        <option value="highpass">High Pass</option>
-                        <option value="bandpass">Band Pass</option>
-                        <option value="allpass">All Pass</option>
-                    </select>
-                </label>
-                <br>
-                <section>
-                    Chorus Effect Intensity: <input type="range" id="chorus-effect-gain-slider" min="0" max="2" value="0" step="0.01">
-                </section>
-
             </div>
-
-
+            <br>
+            <br>
             <div id="settings-select">
                 <img id="settings-image" src="media/settings-icon2.png" title="Settings">
             </div>

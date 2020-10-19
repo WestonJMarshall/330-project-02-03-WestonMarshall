@@ -3,7 +3,7 @@ let audioCtx;
 
 // **These are "private" properties - these will NOT be visible outside of this module (i.e. file)**
 // 2 - WebAudio nodes that are part of our WebAudio audio routing graph
-let element, chorusElement, sourceNode, chorusSourceNode, analyserNode, gainNode, filterNode, chorusFilterNode, pannerNode, chorusGainNode;
+let element, sourceNode, analyserNode, gainNode, filterNode, pannerNode;
 
 // 3 - here we are faking an enumeration
 const DEFAULTS = Object.freeze({
@@ -23,15 +23,12 @@ function setupWebaudio(filePath) {
 
     // 2 - this creates an <audio> element
     element = new Audio();
-    chorusElement = new Audio();
 
     // 3 - have it point at a sound file
     loadSoundFile(filePath);
 
     // 4 - create an a source node that points at the <audio> element
     sourceNode = audioCtx.createMediaElementSource(element);
-
-    chorusSourceNode = audioCtx.createMediaElementSource(chorusElement);
 
     // 5 - create an analyser node
     // note the UK spelling of "Analyser"
@@ -56,19 +53,8 @@ function setupWebaudio(filePath) {
     filterNode = audioCtx.createBiquadFilter();
     filterNode.type = "allpass";
 
-    chorusFilterNode = audioCtx.createBiquadFilter();
-    chorusFilterNode.type = "lowpass";
-
     pannerNode = audioCtx.createPanner();
     pannerNode.panningModel = "equalpower";
-    
-    chorusGainNode = audioCtx.createGain();
-    chorusGainNode.gain.value = DEFAULTS.gain;
-
-    chorusSourceNode.connect(chorusFilterNode);
-    chorusFilterNode.connect(chorusGainNode);
-    chorusGainNode.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
 
     // 8 - connect the nodes - we now have an audio graph
     sourceNode.connect(filterNode);
@@ -80,17 +66,14 @@ function setupWebaudio(filePath) {
 
 function loadSoundFile(filePath) {
     element.src = filePath;
-    chorusElement.src = filePath;
 }
 
 function playCurrentSound() {
     element.play();
-    chorusElement.play();
 }
 
 function pauseCurrentSound() {
     element.pause();
-    chorusElement.pause();
 }
 
 function setVolume(value) {
@@ -102,17 +85,8 @@ function setFilter(value) {
     filterNode.type = value;
 }
 
-function setChorusFilter(value) {
-    chorusFilterNode.type = value;
-}
-
 function setPanner(value) {
     pannerNode.panningModel = value;
-}
-
-function setChorusGain(value) {
-    value = Number(value) / 1.3;
-    chorusGainNode.gain.value = value;
 }
 
 export {
@@ -124,8 +98,6 @@ export {
     setVolume,
     setFilter,
     setPanner,
-    setChorusGain,
-    setChorusFilter,
     analyserNode
 };
 

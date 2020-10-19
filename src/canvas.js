@@ -73,12 +73,19 @@ function draw(params = {}) {
         ctx.restore();
     }
 
+    if (params.globalStyle == 1) {
+        // 4 - draw bars
+        drawFrequencyBars(params);
 
-    // 4 - draw bars
-    drawFrequencyBars(params);
+        // 5 - draw circles
+        drawWaveformCircle(params);
+    } else if (params.globalStyle == 2) {
+        // 5 - draw circles
+        drawWaveformCircle(params);
 
-    // 5 - draw circles
-    drawWaveformCircle(params);
+        // 4 - draw bars
+        drawFrequencyBarsTypeTwo(params);
+    }
 
     // 6 - bitmap manipulation
     bitmapManipulation(params);
@@ -89,8 +96,8 @@ function drawFrequencyBars(params = {}) {
     if (params.showBars) {
         let barSpacing = 0;
         let margin = 5;
-        let screenWidthForBars = canvasWidth - (audioData.length * barSpacing) - margin * 2;
-        let barWidth = screenWidthForBars / audioData.length;
+        let screenWidthForBars = canvasWidth - ((audioData.length - 4) * barSpacing) - margin * 2;
+        let barWidth = screenWidthForBars / (audioData.length - 4);
         let barHeight = 200;
         let topSpacing = 100;
 
@@ -98,7 +105,7 @@ function drawFrequencyBars(params = {}) {
         ctx.translate(canvasWidth, 0);
         ctx.rotate(90 * Math.PI / 180);
 
-        for (let i = 0; i < audioData.length; i++) {
+        for (let i = 0; i < audioData.length - 3; i++) {
             ctx.fillStyle = `rgba(255,255,255,${0.25 + (i / audioData.length)})`;
             ctx.fillRect(i * barWidth, 0, barWidth + 2, (barHeight * (255.0 / audioData[i]) * 0.5).clamp(barHeight * (255.0 / audioData[i]) * 0.5, (canvasWidth / 2) + 1));
         }
@@ -108,9 +115,40 @@ function drawFrequencyBars(params = {}) {
         ctx.translate(0, canvasWidth);
         ctx.rotate(270 * Math.PI / 180);
 
-        for (let i = 0; i < audioData.length; i++) {
+        for (let i = 0; i < audioData.length - 3; i++) {
             ctx.fillStyle = `rgba(255,255,255,${0.25 + (i / audioData.length)})`;
-            ctx.fillRect((audioData.length - i) * barWidth, 0, barWidth + 2, (barHeight * (255.0 / audioData[i]) * 0.5).clamp(barHeight * (255.0 / audioData[i]) * 0.5, (canvasWidth / 2)));
+            ctx.fillRect(((audioData.length - 4) - i) * barWidth, 0, barWidth + 2, (barHeight * (255.0 / audioData[i]) * 0.5).clamp(barHeight * (255.0 / audioData[i]) * 0.5, (canvasWidth / 2)));
+        }
+        ctx.restore();
+    }
+}
+
+function drawFrequencyBarsTypeTwo(params = {}) {
+    if (params.showBars) {
+        let barSpacing = 0;
+        let margin = 5;
+        let screenWidthForBars = canvasWidth - ((audioData.length - 9) * barSpacing) - margin * 2;
+        let barWidth = screenWidthForBars / (audioData.length - 9);
+        let barHeight = 200;
+        let topSpacing = 100;
+
+        ctx.save();
+        ctx.translate(canvasWidth, 0);
+        ctx.rotate(90 * Math.PI / 180);
+
+        for (let i = 0; i < audioData.length - 8; i++) {
+            ctx.fillStyle = `rgba(0,25,50,${0.25 + (i / audioData.length)})`;
+            ctx.fillRect(i * barWidth, 0, barWidth + 2, (barHeight * (255.0 / audioData[i]) * 0.135).clamp(barHeight * (255.0 / audioData[i]) * 0.135, (canvasWidth / 8) + 1));
+        }
+        ctx.restore();
+
+        ctx.save();
+        ctx.translate(0, canvasWidth);
+        ctx.rotate(270 * Math.PI / 180);
+
+        for (let i = 0; i < audioData.length  - 8; i++) {
+            ctx.fillStyle = `rgba(0,25,50,${0.25 + (i / audioData.length)})`;
+            ctx.fillRect(((audioData.length - 9) - i) * barWidth, 0, barWidth + 2, (barHeight * (255.0 / audioData[i]) * 0.135).clamp(barHeight * (255.0 / audioData[i]) * 0.135, (canvasWidth / 8)));
         }
         ctx.restore();
     }
@@ -120,7 +158,7 @@ function drawWaveformCircle(params = {}) {
     if (params.showCircles) {
 
         let maxRadius = canvasHeight / 2 > canvasWidth / 2 ? canvasWidth / 2 : canvasHeight / 2;
-        let numValues = audioData.length;
+        let numValues = audioData.length - 12;
 
         let d = new Date();
         let pushNewLine = false;
@@ -139,6 +177,37 @@ function drawWaveformCircle(params = {}) {
         ctx.save();
         ctx.translate(canvasWidth / 2, canvasHeight / 1.75);
         ctx.rotate(-90 * Math.PI / 180);
+
+        if (params.globalStyle == 2) {
+            if (params.waveformLines) {
+                frameCount++;
+                for (let i = 0; i < lineDrawQueue.length; i++) {
+                    lineDrawQueue[i].lifeTime += 3.0;
+                    ctx.beginPath();
+                    let vectorLength = Math.sqrt(lineDrawQueue[i].lineArray[0].x * lineDrawQueue[i].lineArray[0].x + lineDrawQueue[i].lineArray[0].y * lineDrawQueue[i].lineArray[0].y);
+                    let proportionValueX = (lineDrawQueue[i].lineArray[0].x / vectorLength) + Math.random() / 65;
+                    let proportionValueY = (lineDrawQueue[i].lineArray[0].y / vectorLength) + Math.random() / 65;
+
+                    ctx.moveTo(lineDrawQueue[i].lineArray[0].x + (lineDrawQueue[i].lifeTime * proportionValueX), lineDrawQueue[i].lineArray[0].y + (lineDrawQueue[i].lifeTime * proportionValueY));
+                    for (let j = 0; j < lineDrawQueue[i].lineArray.length; j++) {
+
+                        vectorLength = Math.sqrt(lineDrawQueue[i].lineArray[j].x * lineDrawQueue[i].lineArray[j].x + lineDrawQueue[i].lineArray[j].y * lineDrawQueue[i].lineArray[j].y);
+                        proportionValueX = (lineDrawQueue[i].lineArray[j].x / vectorLength) + Math.random() / 65;
+                        proportionValueY = (lineDrawQueue[i].lineArray[j].y / vectorLength) + Math.random() / 65;
+
+                        ctx.lineTo(lineDrawQueue[i].lineArray[j].x + (lineDrawQueue[i].lifeTime * proportionValueX), lineDrawQueue[i].lineArray[j].y + (lineDrawQueue[i].lifeTime * proportionValueY));
+                    }
+                    ctx.lineWidth = lineDrawQueue[i].lifeTime / 100;
+                    ctx.strokeStyle = "black";
+                    ctx.stroke();
+                    ctx.fillStyle = "white";
+                    ctx.fill();
+                    if (lineDrawQueue[i].lifeTime > 900) {
+                        lineDrawQueue.shift();
+                    }
+                }
+            }
+        }
 
         if (params.waveformStyle == "default") {
             drawWaveformLineDefault(maxRadius, numValues, pushNewLine);
@@ -189,29 +258,31 @@ function drawWaveformCircle(params = {}) {
         ctx.fill();
         ctx.closePath();
 
-        if (params.waveformLines) {
-            frameCount++;
-            for (let i = 0; i < lineDrawQueue.length; i++) {
-                lineDrawQueue[i].lifeTime += 3.0;
-                ctx.beginPath();
-                let vectorLength = Math.sqrt(lineDrawQueue[i].lineArray[0].x * lineDrawQueue[i].lineArray[0].x + lineDrawQueue[i].lineArray[0].y * lineDrawQueue[i].lineArray[0].y);
-                let proportionValueX = (lineDrawQueue[i].lineArray[0].x / vectorLength) + Math.random() / 65;
-                let proportionValueY = (lineDrawQueue[i].lineArray[0].y / vectorLength) + Math.random() / 65;
+        if (params.globalStyle == 1) {
+            if (params.waveformLines) {
+                frameCount++;
+                for (let i = 0; i < lineDrawQueue.length; i++) {
+                    lineDrawQueue[i].lifeTime += 3.0;
+                    ctx.beginPath();
+                    let vectorLength = Math.sqrt(lineDrawQueue[i].lineArray[0].x * lineDrawQueue[i].lineArray[0].x + lineDrawQueue[i].lineArray[0].y * lineDrawQueue[i].lineArray[0].y);
+                    let proportionValueX = (lineDrawQueue[i].lineArray[0].x / vectorLength) + Math.random() / 65;
+                    let proportionValueY = (lineDrawQueue[i].lineArray[0].y / vectorLength) + Math.random() / 65;
 
-                ctx.moveTo(lineDrawQueue[i].lineArray[0].x + (lineDrawQueue[i].lifeTime * proportionValueX), lineDrawQueue[i].lineArray[0].y + (lineDrawQueue[i].lifeTime * proportionValueY));
-                for (let j = 0; j < lineDrawQueue[i].lineArray.length; j++) {
+                    ctx.moveTo(lineDrawQueue[i].lineArray[0].x + (lineDrawQueue[i].lifeTime * proportionValueX), lineDrawQueue[i].lineArray[0].y + (lineDrawQueue[i].lifeTime * proportionValueY));
+                    for (let j = 0; j < lineDrawQueue[i].lineArray.length; j++) {
 
-                    vectorLength = Math.sqrt(lineDrawQueue[i].lineArray[j].x * lineDrawQueue[i].lineArray[j].x + lineDrawQueue[i].lineArray[j].y * lineDrawQueue[i].lineArray[j].y);
-                    proportionValueX = (lineDrawQueue[i].lineArray[j].x / vectorLength) + Math.random() / 65;
-                    proportionValueY = (lineDrawQueue[i].lineArray[j].y / vectorLength) + Math.random() / 65;
+                        vectorLength = Math.sqrt(lineDrawQueue[i].lineArray[j].x * lineDrawQueue[i].lineArray[j].x + lineDrawQueue[i].lineArray[j].y * lineDrawQueue[i].lineArray[j].y);
+                        proportionValueX = (lineDrawQueue[i].lineArray[j].x / vectorLength) + Math.random() / 65;
+                        proportionValueY = (lineDrawQueue[i].lineArray[j].y / vectorLength) + Math.random() / 65;
 
-                    ctx.lineTo(lineDrawQueue[i].lineArray[j].x + (lineDrawQueue[i].lifeTime * proportionValueX), lineDrawQueue[i].lineArray[j].y + (lineDrawQueue[i].lifeTime * proportionValueY));
-                }
-                ctx.lineWidth = lineDrawQueue[i].lifeTime / 100;
-                ctx.strokeStyle = "black";
-                ctx.stroke();
-                if (lineDrawQueue[i].lifeTime > 900) {
-                    lineDrawQueue.shift();
+                        ctx.lineTo(lineDrawQueue[i].lineArray[j].x + (lineDrawQueue[i].lifeTime * proportionValueX), lineDrawQueue[i].lineArray[j].y + (lineDrawQueue[i].lifeTime * proportionValueY));
+                    }
+                    ctx.lineWidth = lineDrawQueue[i].lifeTime / 100;
+                    ctx.strokeStyle = "black";
+                    ctx.stroke();
+                    if (lineDrawQueue[i].lifeTime > 900) {
+                        lineDrawQueue.shift();
+                    }
                 }
             }
         }
