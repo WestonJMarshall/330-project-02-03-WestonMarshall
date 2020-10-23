@@ -57,6 +57,9 @@
                     <span><input type="checkbox" id="invertCB"><label for="invertCB">Invert Colors</label></span>
                     <span><input type="checkbox" id="embossCB"><label for="embossCB">Emboss</label></span>
                     <br>
+                    <span><input type="checkbox" id="grayscaleCB"><label for="grayscaleCB">Grayscale</label></span>
+                    <span><input type="checkbox" id="thresholdCB"><label for="thresholdCB">Threshold</label></span>
+                    <br>
                 </section>
 
                 <span><input type="checkbox" id="waveform-line-check" checked><label for="waveform-line-check">Waveform Line Effect</label></span>
@@ -96,6 +99,11 @@
                     <input type="color" class="color-picker" id="color-g-picker" value="#8b00ff">
                 </section>
 
+                <section>
+                    Beat Detection Threshold: <input type="range" id="bdt-slider" min="0" max="600" value="200" step="1">
+                    <span id="bdt-label">???</span>
+                </section>
+
                 <div>--------------------------------------------------------</div>
 
                 <h2>Audio</h2>
@@ -112,10 +120,17 @@
                     </select>
                 </label>
                 <br>
-                <label for="panner-select">Panner:
-                    <select id="panner-select">
-                        <option value="equalpower" selected>Equal Power</option>
-                        <option value="HRTF">HRTF</option>
+                <br>
+                <label for="convolver-select">Reverb Type:
+                    <select id="convolver-select">
+                        <option value="media/A1.mp3" selected>1 - Default</option>
+                        <option value="media/A2.mp3">2 - Singing</option>
+                        <option value="media/A3.mp3">3 - Drum Hit</option>
+                        <option value="media/A4.wav">4 - Large Room</option>
+                        <option value="media/A5.mp3">5 - ?</option>
+                        <option value="media/A6.mp3">6 - Random Waveform</option>
+                        <option value="media/A7.mp3">7 - Lots of echo</option>
+                        <option value="media/A8.mp3">8 - Piano key</option>
                     </select>
                 </label>
             </div>

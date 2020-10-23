@@ -18,6 +18,8 @@ const drawParams = {
     showNoise: false,
     invertColors: false,
     emboss: false,
+    grayScale: false,
+    threshold: false,
     waveformLines: true,
     waveformStyle: "default",
     showWaveformGradient: true,
@@ -107,7 +109,7 @@ function setupUI(canvasElement) {
             playButton.dispatchEvent(new MouseEvent("click"));
         }
     };
-    
+
     document.querySelector('#global-style').onchange = e => {
         drawParams.globalStyle = e.target.value;
     };
@@ -147,7 +149,15 @@ function setupUI(canvasElement) {
     document.querySelector('#embossCB').onchange = e => {
         drawParams.emboss = e.target.checked;
     };
-    
+
+    document.querySelector('#grayscaleCB').onchange = e => {
+        drawParams.grayScale = e.target.checked;
+    };
+
+    document.querySelector('#thresholdCB').onchange = e => {
+        drawParams.threshold = e.target.checked;
+    };
+
     document.querySelector('#waveform-line-check').onchange = e => {
         drawParams.waveformLines = e.target.checked;
     };
@@ -192,9 +202,24 @@ function setupUI(canvasElement) {
         audio.setFilter(e.target.value);
     };
 
-    document.querySelector('#panner-select').onchange = e => {
-        audio.setPanner(e.target.value);
+    document.querySelector('#convolver-select').onchange = e => {
+        audio.setConvolverFile(e.target.value);
     };
+
+    //hookup btd slider and label
+    let bdtSlider = document.querySelector("#bdt-slider");
+    let bdtLabel = document.querySelector("#bdt-label");
+
+    //add oninput event to slider
+    bdtSlider.oninput = e => {
+        //set bdt
+        canvas.setBeatDetectionThreshold(e.target.value);
+        //update page visuals to match
+        bdtLabel.innerHTML = e.target.value;
+    };
+
+    //Set initial text from slider
+    bdtSlider.dispatchEvent(new Event("input"));
 } // end setupUI
 
 function loop() {
@@ -212,6 +237,7 @@ function sizeChanged() {
     canvasElement.style.left = left > 0 ? `${left + 4}px` : `${4}px`;
     document.querySelector("#settings-image").style.left = `${size - 58 + left}px`;
     document.querySelector("#controls").style.left = `${size - document.querySelector("#controls").offsetWidth + left}px`;
+    document.querySelector("#controls").style.maxHeight = `${window.innerHeight - 50}px`;
 
     canvas.updateCanvasVisuals(canvasElement);
 }
