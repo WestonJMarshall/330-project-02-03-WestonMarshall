@@ -85,6 +85,16 @@ function setVolume(value) {
     gainNode.gain.value = value;
 }
 
+function getAudioElement()
+{
+    return element;
+}
+
+function setAudioTime(value)
+{
+    element.currentTime = value;
+}
+
 async function setConvolverFile(value) {
     convolverFile = value;
     convolverNode = await createReverb();
@@ -100,6 +110,8 @@ function setFilter(value) {
 
 export {
     audioCtx,
+    getAudioElement,
+    setAudioTime,
     setupWebaudio,
     playCurrentSound,
     pauseCurrentSound,

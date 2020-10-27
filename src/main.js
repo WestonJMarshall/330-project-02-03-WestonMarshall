@@ -16,13 +16,14 @@ const drawParams = {
     showBars: true,
     showCircles: true,
     showNoise: false,
+    showWaveform: true,
     invertColors: false,
     emboss: false,
     grayScale: false,
     threshold: false,
-    waveformLines: true,
-    waveformStyle: "default",
-    showWaveformGradient: true,
+    frequencyLines: true,
+    frequencyStyle: "default",
+    showFrequencyGradient: true,
     gradientColorA: "#ff0000",
     gradientColorB: "#ff7f00",
     gradientColorC: "#ffff00",
@@ -46,6 +47,8 @@ function init() {
     let canvasElement = document.querySelector("canvas"); // hookup <canvas> element
     setupUI(canvasElement);
     canvas.setupCanvas(canvasElement, audio.analyserNode);
+    document.querySelector("#progress-background").onmousedown = audioTimeClicked;
+    document.querySelector("#progress-foreground").onmousedown = audioTimeClicked;
     loop();
 }
 
@@ -129,6 +132,10 @@ function setupUI(canvasElement) {
     document.querySelector("#settings-image").onmouseout = e => {
         document.querySelector("#settings-image").src = "media/settings-icon2.png"
     }
+    
+    document.querySelector('#show-waveform').onchange = e => {
+        drawParams.showWaveform = e.target.checked;
+    };
 
     document.querySelector('#barsCB').onchange = e => {
         drawParams.showBars = e.target.checked;
@@ -158,16 +165,16 @@ function setupUI(canvasElement) {
         drawParams.threshold = e.target.checked;
     };
 
-    document.querySelector('#waveform-line-check').onchange = e => {
-        drawParams.waveformLines = e.target.checked;
+    document.querySelector('#frequency-line-check').onchange = e => {
+        drawParams.frequencyLines = e.target.checked;
     };
 
-    document.querySelector('#waveform-style').onchange = e => {
-        drawParams.waveformStyle = e.target.value;
+    document.querySelector('#frequency-style').onchange = e => {
+        drawParams.frequencyStyle = e.target.value;
     };
 
-    document.querySelector('#waveformGradientCB').onchange = e => {
-        drawParams.showWaveformGradient = e.target.checked;
+    document.querySelector('#frequencyGradientCB').onchange = e => {
+        drawParams.showFrequencyGradient = e.target.checked;
     };
 
     document.querySelector('#color-a-picker').onchange = e => {
@@ -226,6 +233,17 @@ function loop() {
     requestAnimationFrame(loop);
 
     canvas.draw(drawParams);
+    let audioElement = audio.getAudioElement();
+    if (audioElement != null) {
+        let percentage = (audioElement.currentTime / audioElement.duration);
+        let maxWidth = document.querySelector("#progress-background").width;
+        document.querySelector("#progress-foreground").width = percentage * maxWidth;
+    }
+}
+
+function audioTimeClicked(e)
+{
+    audio.setAudioTime((e.offsetX / document.querySelector("#progress-background").width) * audio.getAudioElement().duration);
 }
 
 function sizeChanged() {
@@ -235,6 +253,11 @@ function sizeChanged() {
     canvasElement.width = size;
     canvasElement.height = size;
     canvasElement.style.left = left > 0 ? `${left + 4}px` : `${4}px`;
+
+    document.querySelector("#progress-background").width = size - 26;
+    document.querySelector("#progress-background").style.left = left > 0 ? `${left + 17}px` : `${17}px`;
+    document.querySelector("#progress-foreground").style.left = left > 0 ? `${left + 19}px` : `${17}px`;
+
     document.querySelector("#settings-image").style.left = `${size - 58 + left}px`;
     document.querySelector("#controls").style.left = `${size - document.querySelector("#controls").offsetWidth + left}px`;
     document.querySelector("#controls").style.maxHeight = `${window.innerHeight - 50}px`;

@@ -12,7 +12,8 @@
     <div id="body-wrapper">
         <main>
             <canvas width="800" height="400"></canvas>
-
+            <img src="media/progress-background.jpg" id="progress-background">
+            <img src="media/progress-foreground.jpg" id="progress-foreground">
 
             <div id="controls">
 
@@ -25,6 +26,7 @@
                         <select id="trackSelect">
                             <option value="media/Aragami.mp3" selected>Aragami</option>
                             <option value="media/Every Single Time.mp3">Every Single Time</option>
+                            <option value="media/Heavenly Me.mp3">Heavenly Me</option>
                             <option value="media/GALAXY BURST.mp3">GALAXY BURST</option>
                             <option value="media/Sweden.mp3">Sweden</option>
                         </select>
@@ -48,6 +50,10 @@
                 </label>
                 <br>
                 <br>
+
+                <span><input type="checkbox" id="show-waveform" checked><label for="show-waveform">Show Waveform</label></span>
+                <br>
+                <br>
                 <section>
                     <span><input type="checkbox" id="gradientCB" checked><label for="gradientCB">Show Gradient</label></span>
                     <span><input type="checkbox" id="barsCB" checked><label for="barsCB">Show Bars</label></span>
@@ -62,10 +68,10 @@
                     <br>
                 </section>
 
-                <span><input type="checkbox" id="waveform-line-check" checked><label for="waveform-line-check">Waveform Line Effect</label></span>
+                <span><input type="checkbox" id="frequency-line-check" checked><label for="frequency-line-check">Frequency Line Effect</label></span>
                 <br>
-                <label for="waveform-style">Waveform Type:
-                    <select id="waveform-style">
+                <label for="frequency-style">Frequency Type:
+                    <select id="frequency-style">
                         <option value="default" selected>Default</option>
                         <option value="average">Average</option>
                         <option value="smooth">Smooth</option>
@@ -73,9 +79,9 @@
                 </label>
                 <br>
                 <br>
-                <span><input type="checkbox" id="waveformGradientCB" checked><label for="waveformGradientCB">Show Waveform Gradient</label></span>
+                <span><input type="checkbox" id="frequencyGradientCB" checked><label for="frequencyGradientCB">Show Frequency Gradient</label></span>
                 <section>
-                    <label>Waveform Gradient Colors:</label>
+                    <label>Frequency Gradient Colors:</label>
                     <br>
                     <label for="color-a-picker">A:</label>
                     <input type="color" class="color-picker" id="color-a-picker" value="#ff0000">
@@ -133,11 +139,15 @@
                         <option value="media/A8.mp3">8 - Piano key</option>
                     </select>
                 </label>
+                <br>
+                <br>
+                <a href="https://docs.google.com/document/d/1mVlun39yDl0J9veX29yl48ZzRho6Ik6E2-56ZKX4Dfs/edit?usp=sharing">Documentation</a>
             </div>
             <br>
             <br>
             <div id="settings-select">
                 <img id="settings-image" src="media/settings-icon2.png" title="Settings">
+
             </div>
 
         </main>

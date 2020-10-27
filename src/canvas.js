@@ -13,7 +13,7 @@ Number.prototype.clamp = function (min, max) {
     return Math.min(Math.max(this, min), max);
 };
 
-let ctx, canvasWidth, canvasHeight, gradient, analyserNode, audioData;
+let ctx, canvasWidth, canvasHeight, gradient, analyserNode, audioData, audioDataWaveform;
 
 let lineDrawQueue = [];
 let frameCount = 0;
@@ -32,6 +32,7 @@ function setupCanvas(canvasElement, analyserNodeRef) {
     analyserNode = analyserNodeRef;
     // this is the array where the analyser data will be stored
     audioData = new Uint8Array(analyserNode.fftSize / 2);
+    audioDataWaveform = new Uint8Array(analyserNode.frequencyBinCount);
 
     let d = new Date();
     prevFrameMilli = d.getMilliseconds();
@@ -65,7 +66,7 @@ function draw(params = {}) {
     // notice these arrays are passed "by reference" 
     analyserNode.getByteFrequencyData(audioData);
     // OR
-    //analyserNode.getByteTimeDomainData(audioData); // waveform data
+    analyserNode.getByteTimeDomainData(audioDataWaveform); // waveform data
 
     // 2 - draw background
     ctx.save();
@@ -88,18 +89,42 @@ function draw(params = {}) {
         drawFrequencyBars(params);
 
         // 5 - draw circles
-        drawWaveformCircle(params);
+        drawFrequencyCircle(params);
     } else if (params.globalStyle == 2) {
         // 5 - draw circles
-        drawWaveformCircle(params);
+        drawFrequencyCircle(params);
 
         // 4 - draw bars
         drawFrequencyBarsTypeTwo(params);
     }
 
+    if (params.showWaveform) {
+        drawWaveform();
+    }
+
     // 6 - bitmap manipulation
     bitmapManipulation(params);
 
+}
+
+function drawWaveform() {
+    let barSpacing = 0;
+    let margin = 5;
+    let screenWidthForBars = canvasWidth - ((audioDataWaveform.length - 12) * barSpacing) - margin * 2;
+    let barWidth = screenWidthForBars / (audioDataWaveform.length - 12);
+    let barHeight = 100;
+    let topSpacing = 100;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, barHeight * (255.0 / audioDataWaveform[0]));
+    for (let i = 1; i < audioDataWaveform.length - 1; i++) {
+        ctx.lineTo(i * barWidth, barHeight * (255.0 / audioDataWaveform[i]));
+    }
+    ctx.strokeStyle = `rgba(0,0,0,1)`;
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    ctx.restore();
 }
 
 function drawFrequencyBars(params = {}) {
@@ -164,7 +189,7 @@ function drawFrequencyBarsTypeTwo(params = {}) {
     }
 }
 
-function drawWaveformCircle(params = {}) {
+function drawFrequencyCircle(params = {}) {
     if (params.showCircles) {
 
         let maxRadius = canvasHeight / 2 > canvasWidth / 2 ? canvasWidth / 2 : canvasHeight / 2;
@@ -205,23 +230,23 @@ function drawWaveformCircle(params = {}) {
         ctx.rotate(-90 * Math.PI / 180);
 
         if (params.globalStyle == 2) {
-            if (params.waveformLines) {
+            if (params.frequencyLines) {
                 frameCount++;
                 linePulse(params.globalStyle);
             }
         }
 
-        if (params.waveformStyle == "default") {
-            drawWaveformLineDefault(maxRadius, numValues, pushNewLine);
-        } else if (params.waveformStyle == "average") {
-            drawWaveformLineAvereged(maxRadius, numValues, average, pushNewLine);
-        } else if (params.waveformStyle == "smooth") {
-            drawWaveformLineSmooth(maxRadius, numValues, pushNewLine);
+        if (params.frequencyStyle == "default") {
+            drawFrequencyLineDefault(maxRadius, numValues, pushNewLine);
+        } else if (params.frequencyStyle == "average") {
+            drawFrequencyLineAvereged(maxRadius, numValues, average, pushNewLine);
+        } else if (params.frequencyStyle == "smooth") {
+            drawFrequencyLineSmooth(maxRadius, numValues, pushNewLine);
         }
 
         ctx.fillStyle = "white";
 
-        if (params.showWaveformGradient) {
+        if (params.showFrequencyGradient) {
             let change = (d.getMilliseconds() % 1000) / 1000;
 
             let valueA = (0 + change);
@@ -261,7 +286,7 @@ function drawWaveformCircle(params = {}) {
         ctx.closePath();
 
         if (params.globalStyle == 1) {
-            if (params.waveformLines) {
+            if (params.frequencyLines) {
                 frameCount++;
                 linePulse(params.globalStyle);
             }
@@ -303,7 +328,7 @@ function linePulse(style) {
     }
 }
 
-function drawWaveformLineDefault(maxRadius, numValues, pushNewLine) {
+function drawFrequencyLineDefault(maxRadius, numValues, pushNewLine) {
     ctx.beginPath();
 
     let lineArrayQueueElement = [];
@@ -372,7 +397,7 @@ function drawWaveformLineDefault(maxRadius, numValues, pushNewLine) {
     ctx.stroke();
 }
 
-function drawWaveformLineSmooth(maxRadius, numValues, pushNewLine) {
+function drawFrequencyLineSmooth(maxRadius, numValues, pushNewLine) {
     ctx.beginPath();
 
     let lineArrayQueueElement = [];
@@ -466,7 +491,7 @@ function drawWaveformLineSmooth(maxRadius, numValues, pushNewLine) {
     ctx.stroke();
 }
 
-function drawWaveformLineAvereged(maxRadius, numValues, average, pushNewLine) {
+function drawFrequencyLineAvereged(maxRadius, numValues, average, pushNewLine) {
     ctx.beginPath();
 
     let lineArrayQueueElement = [];
@@ -579,7 +604,7 @@ function bitmapManipulation(params = {}) {
             let r = data[i];
             let g = data[i + 1];
             let b = data[i + 2];
-            
+
             let v = (0.2126 * r + 0.7152 * g + 0.0722 * b >= threshold) ? 255 : 0;
             data[i] = data[i + 1] = data[i + 2] = v
         }

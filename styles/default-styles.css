@@ -20,6 +20,25 @@ canvas {
     border-style: inset;
 }
 
+#progress-background {
+    position: absolute;
+    bottom: 15px;
+    height: 30px;
+    margin: -5px;
+    padding: 0px;
+    border: 2px solid black;
+    border-radius: 9px;
+}
+
+#progress-foreground {
+    position: absolute;
+    height: 26px;
+    margin: -5px;
+    padding: 0px;
+    bottom: 19px;
+    border-radius: 6px;
+}
+
 h2{
     margin-top: 0px;
 }
